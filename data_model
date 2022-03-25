@@ -1,0 +1,17 @@
+Athlete{
+	userid: 
+	Name
+	Nationality:
+	email:
+	location:
+	availability: {
+		date: {
+			location:
+			time:
+		}
+	}
+}
+
+
+
+shard1 shard2 shard3
