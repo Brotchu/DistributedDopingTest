@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 import json
 from flask_mongoengine import MongoEngine
 from pymysql import Date
@@ -30,15 +30,54 @@ class Athlete(db.Document):
     
 
 
-@app.route('/')
-def hello():
-    #TODO: sample user
-    Athlete(name="test_athlete1",
-            email="test_athlete_email1",
-            password="test_password",
-            nationality="Ireland",
-            location="Dublin").save()
-    return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+@app.route('/register', methods=['POST'])
+def register_athlete():
+    if request.method  != 'POST':
+        return json.dumps({'Error': 'method not allowed'}), 405, {'ContentType': 'application/json'}
+    
+    #get info from form
+    athlete_name = request.form['name']
+    athlete_email = request.form['email']
+    password = request.form['password']
+    confirm_password = request.form['confirm_password']
+    nationality = request.form['nationality']
+    location = request.form['location']
+
+    if not athlete_name:
+        return json.dumps({'Error': 'required Athlete Name'}), 400, {'ContentType': 'application/json'}
+    elif not athlete_email:
+        return json.dumps({'Error': 'required Athlete Email'}), 400, {'ContentType': 'application/json'}
+    elif not nationality:
+        return json.dumps({'Error': 'required Athlete Nationality'}), 400, {'ContentType': 'application/json'}
+    elif not location:
+        return json.dumps({'Error': 'required Athlete Locaiton'}), 400, {'ContentType': 'application/json'}
+    elif not password or not confirm_password:
+        return json.dumps({'Error': 'required Athlete Password'}), 400, {'ContentType': 'application/json'}
+    
+
+    if password != confirm_password:
+        return json.dumps({'Error': 'password and confirm password does not match'}), 400, {'ContentType': 'application/json'}
+    #TODO: hash password
+    #create athlete object
+
+    try:
+        Athlete(name=athlete_name,
+                email=athlete_email,
+                password=password,
+                nationality=nationality,
+                location=location).save()
+    except NotUniqueError:
+        return json.dumps({'Error': 'ahtlete already exists with same email'}), 400, {'ContentType': 'application/json'}
+    except Exception as e:
+        print(e)
+        # print(e.__name__)
+        print(e.__class__.__name__)
+        print(e.__class__.__qualname__)
+
+        return json.dumps({'Error': 'internal server error'}), 500, {'ContentType': 'application/json'}
+    
+    return json.dumps({'Success': True}), 400, {'ContentType': 'application/json'}
+    #save
 
 
 if __name__ == "__main__":
