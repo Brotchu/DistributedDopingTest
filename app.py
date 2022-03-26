@@ -1,9 +1,13 @@
-from flask import Flask, request
+from flask import Flask, make_response, request, session
 import json
-from flask_mongoengine import MongoEngine
-from pymysql import Date
+from flask_mongoengine import MongoEngine, MongoEngineSessionInterface
+from sklearn.datasets import make_regression
+from schema import Athlete
+from athlete_login import athlete_login
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
+app.secret_key='SECRET_KEY' #TODO: change it!
 app.config['MONGODB_SETTINGS'] =  {
     'db': 'test_db',
     'host': 'localhost',
@@ -11,23 +15,39 @@ app.config['MONGODB_SETTINGS'] =  {
 }
 
 db = MongoEngine()
+app.session_interface = MongoEngineSessionInterface(db)
 db.init_app(app)
 
 
-class DateAvailability(db.EmbeddedDocument):
-    date = db.DateTimeField(required = True)
-    location = db.StringField(required =True)
-
-
-class Athlete(db.Document):
-    name = db.StringField(required = True)
-    email = db.StringField(unique = True, required = True)
-    password = db.StringField(required = True) #TODO: hash it!!
-    nationality = db.StringField(required = True)
-    location = db.StringField(required = True)
-    # availability = db.ListField(db.EmbeddedDocumentField(DateAvailability))
-    availability = db.DictField()
+def verify_session(func):
+    def wrapper(*args, **kwargs):
+        if not session.get('email'):
+            return json.dumps({'Error': 'UnAuthorized'}), 401, {'ContentType': 'application/json'}
+        return func(*args, **kwargs)
+    return wrapper
     
+@app.route('/logout', methods=['GET', 'POST'])
+def athlete_logout():
+    session.pop('email')
+    resp = make_response(json.dumps({'Success': True}), 200, {'ContentType': 'application/json'})
+    return resp
+
+@app.route('/login', methods=['POST'])
+def athlete_login():
+    athlete_email = request.form['email']
+    athlete_password = request.form['password']
+    #check if already present in session
+    if session.get('email') == athlete_email:
+        return make_response(json.dumps({'Success': True, 'status': 'logged in already'}), 200, {'ContentType': 'application/json'})
+    athlete = Athlete.objects(email= athlete_email)[0]
+    if check_password_hash(athlete.password, athlete_password):
+        session['email'] =  athlete_email
+        # print(session_id)
+        resp = make_response(json.dumps({'Success': True}), 200, {'ContentType': 'application/json'})
+        return resp
+    else:
+        return json.dumps({'Error': 'Incorrect username or password'}), 400, {'ContentType': 'application/json'}
+
 
 
 @app.route('/register', methods=['POST'])
@@ -57,17 +77,16 @@ def register_athlete():
 
     if password != confirm_password:
         return json.dumps({'Error': 'password and confirm password does not match'}), 400, {'ContentType': 'application/json'}
-    #TODO: hash password
-    #create athlete object
+    password_hash = generate_password_hash(password)
 
     try:
         Athlete(name=athlete_name,
                 email=athlete_email,
-                password=password,
+                password=password_hash,
                 nationality=nationality,
                 location=location).save()
-    except NotUniqueError:
-        return json.dumps({'Error': 'ahtlete already exists with same email'}), 400, {'ContentType': 'application/json'}
+    # except NotUniqueError:
+    #     return json.dumps({'Error': 'ahtlete already exists with same email'}), 400, {'ContentType': 'application/json'}
     except Exception as e:
         print(e)
         # print(e.__name__)
@@ -76,7 +95,7 @@ def register_athlete():
 
         return json.dumps({'Error': 'internal server error'}), 500, {'ContentType': 'application/json'}
     
-    return json.dumps({'Success': True}), 400, {'ContentType': 'application/json'}
+    return json.dumps({'Success': True}), 200, {'ContentType': 'application/json'}
     #save
 
 
