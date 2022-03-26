@@ -1,0 +1,34 @@
+version: "3"
+
+services:
+  shard__IDX___svr0:
+    container_name: shard__IDX___svr0
+    image: mongo
+    command: mongod --shardsvr --replSet shard__IDX___rs --port 27017 --dbpath /data/db
+    ports:
+      - 500__IDX__1:27017
+    volumes:
+      - shard__IDX___svr0:/data/db
+
+  shard__IDX___svr1:
+    container_name: shard__IDX___svr1
+    image: mongo
+    command: mongod --shardsvr --replSet shard__IDX___rs --port 27017 --dbpath /data/db
+    ports:
+      - 500__IDX__2:27017
+    volumes:
+      - shard__IDX___svr1:/data/db
+
+  shard__IDX___svr2:
+    container_name: shard__IDX___svr2
+    image: mongo
+    command: mongod --shardsvr --replSet shard__IDX___rs --port 27017 --dbpath /data/db
+    ports:
+      - 500__IDX__3:27017
+    volumes:
+      - shard__IDX___svr2:/data/db
+
+volumes:
+  shard__IDX___svr0: {}
+  shard__IDX___svr1: {}
+  shard__IDX___svr2: {}
