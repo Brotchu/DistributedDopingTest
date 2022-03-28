@@ -1,8 +1,9 @@
+import email
 from flask import Flask, make_response, request, session
 import json
 from flask_mongoengine import MongoEngine, MongoEngineSessionInterface
 from sklearn.datasets import make_regression
-from schema import Athlete
+from schema import Athlete, Emails
 from athlete_login import athlete_login
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -32,6 +33,20 @@ def athlete_logout():
     resp = make_response(json.dumps({'Success': True}), 200, {'ContentType': 'application/json'})
     return resp
 
+@app.route('/testupdate', methods=["POST"])
+def test_update():
+    athlete_email = session['email']
+    try:
+        Athlete.objects(email=athlete_email).update(__raw__=[
+            {"$set": {"availability."+"20220329" : "Dublin"}},
+            {"$set": {"availability."+"20220330" : "Dublin"}}
+        ],)
+    except:
+        return json.dumps({'Error': 'Update error'}), 500, {'ContentType': 'application/json'}
+    resp = make_response(json.dumps({'Success': True}), 200, {'ContentType': 'application/json'})
+    return resp
+
+
 @app.route('/login', methods=['POST'])
 def athlete_login():
     athlete_email = request.form['email']
@@ -42,6 +57,7 @@ def athlete_login():
     athlete = Athlete.objects(email= athlete_email)[0]
     if check_password_hash(athlete.password, athlete_password):
         session['email'] =  athlete_email
+        # session['name'] = "name"
         # print(session_id)
         resp = make_response(json.dumps({'Success': True}), 200, {'ContentType': 'application/json'})
         return resp
@@ -80,6 +96,14 @@ def register_athlete():
     password_hash = generate_password_hash(password)
 
     try:
+        try:
+            Emails(
+                email= athlete_email
+            ).save()
+        except:
+            return json.dumps({'Error': 'user with email id already exists'}), 500, {'ContentType': 'application/json'}    
+        # if len(Athlete.objects(email=athlete_email)) > 0:
+        #     return json.dumps({'Error': 'user with email id already exists'}), 500, {'ContentType': 'application/json'}    
         Athlete(name=athlete_name,
                 email=athlete_email,
                 password=password_hash,
