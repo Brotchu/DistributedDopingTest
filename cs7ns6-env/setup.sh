@@ -2,8 +2,7 @@
 
 ############# CONFIGS #############
 
-# your ip here
-HOST=10.6.56.67
+HOST=host.docker.internal
 DIR=$(dirname "$0")
 DB=cs7ns6
 COLLECTION=athlete
@@ -12,6 +11,7 @@ COUNTRIES=(
   "GB"
   "DE"
 )
+SLEEP=5
 
 ############### END ###############
 
@@ -31,7 +31,6 @@ function create_containers() {
   done
 
   # router
-  sed "s/<YOUR_IP>/${HOST}/g" ${DIR}/_router_template.yaml >${DIR}/router.yaml
   docker-compose -f ${DIR}/router.yaml up -d
 }
 
@@ -45,7 +44,7 @@ function setup_replica_sets() {
         { _id : 2, host : \"${HOST}:40003\" }
       ]
     }
-  )" | mongosh mongodb://10.6.56.67:40001
+  )" | mongosh mongodb://localhost:40001
 
   i=0
   for SHARD in $(find ${DIR} -name 'shard*.yaml'); do
@@ -58,16 +57,18 @@ function setup_replica_sets() {
           { _id : 2, host : \"${HOST}:500${i}3\" }
         ]
       }
-    )" | mongosh mongodb://${HOST}:500${i}1
+    )" | mongosh mongodb://localhost:500${i}1
     i=$((i + 1))
+    sleep ${SLEEP}
   done
 }
 
 function setup_router() {
   i=0
   for SHARD in $(find ${DIR} -name 'shard*.yaml'); do
-    echo "sh.addShard(\"shard${i}_rs/${HOST}:500${i}1,${HOST}:500${i}2,${HOST}:500${i}3\")" | mongosh mongodb://10.6.56.67:60000
+    echo "sh.addShard(\"shard${i}_rs/${HOST}:500${i}1,${HOST}:500${i}2,${HOST}:500${i}3\")" | mongosh mongodb://localhost:60000
     i=$((i + 1))
+    sleep ${SLEEP}
   done
 }
 
@@ -75,11 +76,14 @@ function setup_db() {
   echo "
     use ${DB}
     db.createCollection(\"${COLLECTION}\")
-  " | mongosh mongodb://10.6.56.67:60000
+  " | mongosh mongodb://localhost:60000
+  sleep ${SLEEP}
 }
 
 function setup_shardings() {
-  echo "sh.enableSharding(\"${DB}\")" | mongosh mongodb://10.6.56.67:60000
+  echo "sh.enableSharding(\"${DB}\")" | mongosh mongodb://localhost:60000
+
+  sleep ${SLEEP}
 
   i=0
   for SHARD in $(find ${DIR} -name 'shard_*.yaml'); do
@@ -94,11 +98,16 @@ function setup_shardings() {
           \"email\": MaxKey 
         }, 
         \"${COUNTRIES[$i]}\"
-    )" | mongosh mongodb://10.6.56.67:60000
+    )" | mongosh mongodb://localhost:60000
     i=$((i + 1))
+
+    sleep ${SLEEP}
+
   done
 
-  echo "sh.shardCollection(\"${DB}.athlete\", { \"nationality\": 1, \"email\": 1 } )" | mongosh mongodb://10.6.56.67:60000
+  sleep ${SLEEP}
+
+  echo "sh.shardCollection(\"${DB}.athlete\", { \"nationality\": 1, \"email\": 1 } )" | mongosh mongodb://localhost:60000
 }
 
 function main() {
