@@ -12,9 +12,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 app.secret_key='SECRET_KEY' #TODO: change it!
 app.config['MONGODB_SETTINGS'] =  {
-    'db': 'test_db',
+    'db': 'cs7ns6',
     'host': 'localhost',
-    'port': 27017
+    'port': 60000
 }
 
 db = MongoEngine()

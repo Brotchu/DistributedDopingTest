@@ -9,7 +9,7 @@ class DateAvailability(EmbeddedDocument):
 
 class Athlete(Document):
     name = StringField(required = True)
-    email = StringField(unique = True)
+    email = StringField(required = True)
     password = StringField(required = True) #TODO: hash it!!
     nationality = StringField(required = True)
     location = StringField(required = True)
