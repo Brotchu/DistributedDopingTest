@@ -119,7 +119,7 @@ def availability():
     
     Athlete.objects(email=email_).update(__raw__= updateList)
 
-    return jsonify({'Availability for ': ' Email : '  + ' is updated!'})
+    return jsonify({'Availability is updated!'})
 
 if __name__ == "__main__":
     app.run(debug=True)
