@@ -1,6 +1,6 @@
 # 
 from functools import wraps
-from flask import Flask, make_response, request, session
+from flask import Flask, make_response, request, session, jsonify
 import json
 from flask_mongoengine import MongoEngine, MongoEngineSessionInterface
 from sklearn.datasets import make_regression
@@ -12,10 +12,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 app.secret_key='SECRET_KEY' #TODO: change it!
 app.config['MONGODB_SETTINGS'] =  {
-    'db': 'cs7ns6',
-    'host': 'localhost',
-    'port': 60000
+    'db': 'TestDB',
+    'host': '127.0.0.1',
+    'port': 27017
 }
+
+
 
 db = MongoEngine()
 app.session_interface = MongoEngineSessionInterface(db)
@@ -152,7 +154,7 @@ def register_athlete():
 @app.route("/availability", methods=['POST'])
 @verify_session
 def availability():
-    object_ = request.get_json()   
+    object_ = request.get_json()
     email_ = session.get('email')
   
     updateList = []
@@ -165,6 +167,90 @@ def availability():
     Athlete.objects(email=email_).update(__raw__= updateList)
 
     return json.dumps({'Availability for ': ' Email : '  + ' is updated!'})
+
+# query：getbyEmail, byName，byNationality
+# @app.route("/availability/getInfo", methods=['POST'])
+# @verify_session
+# def availability_query():
+#     object_ = request.get_json()
+#
+#     d={}
+#
+#     if "nationality" in object_.keys():
+#         d["nationality"] = object_['nationality']
+#     if "name" in object_.keys():
+#         d["name"] = object_['name']
+#     if "email" in object_.keys():
+#         d["email"] = object_['email']
+#
+#     print(d)
+#
+#     print("obj:"+str(object_))
+#     res = Athlete.objects(__raw__= d)
+#
+#     return jsonify(res)
+
+
+# byDate
+# @app.route("/availability/getInfo", methods=['POST'])
+# @verify_session
+# def availability_query():
+#     object_ = request.get_json()
+#
+#     if "start" in object_.keys():
+#         s_ = int(object_['start'])
+#     if "end" in object_.keys():
+#         e_ = int(object_['end'])
+#     # print(s_,e_)
+#
+#     arg_list = []
+#     for i in range(s_,e_):
+#         s = "availability." + str(i)
+#         arg_list.append(s)
+#     print(arg_list)
+#
+#     res = Athlete.objects(__raw__ = {
+#         "location":"ie"
+#     }).scalar(*arg_list)
+#
+#
+#     print("obj:"+str(object_))
+#     return jsonify(res)
+
+
+@app.route("/availability/getInfo", methods=['POST'])
+@verify_session
+def availability_query():
+    object_ = request.get_json()
+
+    d = {}
+    if "nationality" in object_.keys():
+        d["nationality"] = object_['nationality']
+    if "name" in object_.keys():
+        d["name"] = object_['name']
+    if "email" in object_.keys():
+        d["email"] = object_['email']
+
+    if "start" in object_.keys():
+        s_ = int(object_['start'])
+    if "end" in object_.keys():
+        e_ = int(object_['end'])
+    # print(s_,e_)
+
+    arg_list = []
+    for i in range(s_,e_):
+        s = "availability." + str(i)
+        arg_list.append(s)
+    # print(arg_list)
+
+    res = Athlete.objects(__raw__ =
+        d
+    ).scalar(*arg_list)
+
+    print("obj:"+str(object_))
+    return jsonify(res)
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
