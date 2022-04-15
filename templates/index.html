@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Athlete Registration</h1>
+<form action="" id="athleteRegistration">
+<div>
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name">
+</div>
+<div>
+    <label for="email">Email</label>
+    <input type="text" id="email" name="email">
+</div>
+<div>
+    <label for="password">Password</label>
+    <input type="password" name="password" id="password">
+</div>
+<div>
+    <label for="confirm_password">Confirm Password</label>
+    <input type="password" name="confirm_password" id="confirm_password">
+</div>
+<div>
+    <label for="nationality">Nationality</label>
+    <input type="text" name="nationality" id="nationality">
+</div>
+<div>
+    <label for="location">Location</label>
+    <input type="text" name="location" id="location">
+</div>
+
+<div>
+    <button type="submit" id="submitRegistration">
+        Submit
+    </button>
+</div>
+</form>
+<script src="{{url_for('static', filename='scripts/postRequest.js') }}"></script>
+
+</body>
+</html>

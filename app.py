@@ -1,6 +1,7 @@
 # 
+from crypt import methods
 from functools import wraps
-from flask import Flask, make_response, request, session, jsonify
+from flask import Flask, make_response, render_template, request, session, jsonify
 import json
 from flask_mongoengine import MongoEngine, MongoEngineSessionInterface
 from sklearn.datasets import make_regression
@@ -72,13 +73,20 @@ def athlete_login():
     else:
         return json.dumps({'Error': 'Incorrect username or password'}), 400, {'ContentType': 'application/json'}
 
+@app.route('/')
+def index():
+    return render_template('index.html')
 
+@app.route('/formtest', methods=['POST'])
+def formtest():
+    print(request.json)
+    return "got it"
 
 @app.route('/register', methods=['POST'])
 def register_athlete():
     if request.method  != 'POST':
         return json.dumps({'Error': 'method not allowed'}), 405, {'ContentType': 'application/json'}
-    
+
     #get info from form
     athlete_name = request.form['name']
     athlete_email = request.form['email']
