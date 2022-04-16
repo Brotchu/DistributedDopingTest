@@ -32,7 +32,7 @@ app.config['MONGODB_SETTINGS'] = {
 
 db = MongoEngine()
 app.session_interface = MongoEngineSessionInterface(db)
-db.init_app(app)
+# db.init_app(app)
 
 
 def verify_session(f):
@@ -132,6 +132,7 @@ def register_athlete():
             ).save()
         except:
             return json.dumps({'Error': 'user with email id already exists'}), 500, {'ContentType': 'application/json'}    
+        
         # if len(Athlete.objects(email=athlete_email)) > 0:
         #     return json.dumps({'Error': 'user with email id already exists'}), 500, {'ContentType': 'application/json'}    
         Athlete(name=athlete_name,
@@ -273,4 +274,5 @@ def availability_query():
 
 
 if __name__ == "__main__":
+    db.init_app(app)
     app.run(host='0.0.0.0', port=API_SVR_PORT, debug=True)
