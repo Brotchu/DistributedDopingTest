@@ -1,7 +1,9 @@
-from schema import Athlete
-from flask import request
 import json
+
+from flask import request
 from werkzeug.security import check_password_hash
+
+from schema import Athlete
 
 
 def athlete_login():

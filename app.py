@@ -1,13 +1,14 @@
-# 
-from functools import wraps
-from flask import Flask, make_response, request, session, jsonify
+#!env python3
 import json
+from functools import wraps
+
+from flask import Flask, jsonify, make_response, request, session
 from flask_mongoengine import MongoEngine, MongoEngineSessionInterface
 from sklearn.datasets import make_regression
-from schema import Athlete, Emails
-from athlete_login import athlete_login
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 
+from athlete_login import athlete_login
+from schema import Athlete, Emails
 
 app = Flask(__name__)
 app.secret_key='SECRET_KEY' #TODO: change it!

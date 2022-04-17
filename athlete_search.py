@@ -1,5 +1,7 @@
-from flask import Blueprint, request, jsonify
 import json
+
+from flask import Blueprint, jsonify, request
+
 from schema import Athlete
 
 app_search_blueprint = Blueprint('app', __name__)

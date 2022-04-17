@@ -1,5 +1,7 @@
 from enum import unique
-from mongoengine import Document, EmbeddedDocument, StringField, DictField, DateTimeField
+
+from mongoengine import (DateTimeField, DictField, Document, EmbeddedDocument,
+                         StringField)
 
 
 class DateAvailability(EmbeddedDocument):

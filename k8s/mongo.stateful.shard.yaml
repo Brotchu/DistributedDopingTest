@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo-shard-svr
+spec:
+  serviceName: mongo-shard-svr
+  selector:
+    matchLabels:
+      app: mongo-shard-svr
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: mongo-shard-svr
+    spec:
+      securityContext:
+        fsGroup: 1001
+      containers:
+        - name: mongo-shard-svr
+          image: docker.io/bitnami/mongodb:5.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MONGODB_DISABLE_SYSTEM_LOG
+              value: "false"
+            - name: MONGODB_SYSTEM_LOG_VERBOSITY
+              value: "1"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MONGODB_REPLICA_SET_NAME
+              value: "mongo-shard-svr-rs"
+            - name: MONGODB_INITIAL_PRIMARY_HOST
+              value: "mongo-shard-svr-0"
+            - name: MONGODB_ADVERTISED_HOSTNAME
+              value: "$(POD_NAME)"
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "yes"
+          command:
+            - /config/script.sh
+          securityContext:
+            runAsUser: 1001
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: data
+              mountPath: /bitnami/mongodb
+      volumes:
+        - name: config
+          configMap:
+            name: mongo-shard-config
+            defaultMode: 0755
+            items:
+              - key: script.sh
+                path: script.sh
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources:
+          requests:
+            storage: 500Mi
+        storageClassName: mongo-storage
