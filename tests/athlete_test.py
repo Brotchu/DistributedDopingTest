@@ -9,7 +9,7 @@ app.config['MONGODB_SETTINGS'] =  {
     'port': 27017
 }
 
-db.init_app(app)
+#db.init_app(app)
 
 with app.app_context():
     Athlete().drop_collection()
@@ -25,6 +25,8 @@ class TestAthleteRegistration:
         'nationality' : 'IRL',
         'location' : 'Dublin'
     }
+
+    
 
     def test_athlete_registration(self):
         tester = app.test_client(self)

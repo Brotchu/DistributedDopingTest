@@ -1,7 +1,5 @@
-# 
-from crypt import methods
 from functools import wraps
-from flask import Flask, make_response, render_template, request, session, jsonify
+from flask import Flask, make_response, request, session, jsonify
 import json
 from flask_mongoengine import MongoEngine, MongoEngineSessionInterface
 from sklearn.datasets import make_regression
