@@ -22,7 +22,7 @@ app.secret_key = 'SECRET_KEY'  # TODO: change it!
 app.config['MONGODB_SETTINGS'] = {
     'db': DB,
     'host': MONGO_ENDPOINT,
-    'port': int(MONGO_PORT)
+    'port': int(MONGO_PORT),
 }
 
 

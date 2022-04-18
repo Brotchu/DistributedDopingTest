@@ -5,9 +5,10 @@ metadata:
   labels:
     domain: cs7ns6
 spec:
-  ports:
-    - port: 27017
-      targetPort: 27017
   clusterIP: None
   selector:
     domain: cs7ns6
+  ports:
+    - port: 27017
+      targetPort: 27017
+

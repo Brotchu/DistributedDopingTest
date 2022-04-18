@@ -5,10 +5,10 @@ metadata:
   labels:
     name: mongo-router-svr
 spec:
-  type: NodePort
+  type: LoadBalancer
+  selector:
+    app: mongo-router-svr
   ports:
     - port: 27017
       targetPort: 27017
-      nodePort: 30717
-  selector:
-    app: mongo-router-svr
+      protocol: TCP
