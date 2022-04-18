@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cs7ns6-api-svr
+spec:
+  selector:
+    matchLabels:
+      app: cs7ns6-api-svr
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: cs7ns6-api-svr
+    spec:
+      containers:
+        - name: cs7ns6-api-svr
+          image: ghcr.io/Brotchu/DistributedDopingTest:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: CS7NS6_USE_DB
+              value: "cs7ns6"
+            - name: CS7NS6_DB_ENDPOINT
+              value: "mongo-router-svc"
+            - name: CS7NS6_DB_PORT
+              value: "27017"
+            - name: CS7NS6_API_SVR_PORT
+              value: "8080"
+          ports:
+            - containerPort: 8080

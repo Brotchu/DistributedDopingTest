@@ -1,5 +1,6 @@
 #!env python3
 import json
+import os
 from functools import wraps
 
 from flask import Flask, jsonify, make_response, request, session
@@ -10,14 +11,19 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from athlete_login import athlete_login
 from schema import Athlete, Emails
 
-app = Flask(__name__)
-app.secret_key='SECRET_KEY' #TODO: change it!
-app.config['MONGODB_SETTINGS'] =  {
-    'db': 'TestDB',
-    'host': '127.0.0.1',
-    'port': 27017
-}
+MONGO_ENDPOINT = os.environ.get('CS7NS6_MONGO_ENDPOINT', default='localhost')
+MONGO_PORT = os.environ.get('CS7NS6_MONGO_PORT', default='27017')
+DB = os.environ.get('CS7NS6_USE_DB', default='cs7ns6')
+API_SVR_PORT = os.environ.get('CS7NS6_API_SVR_PORT', default='8080')
 
+
+app = Flask(__name__)
+app.secret_key = 'SECRET_KEY'  # TODO: change it!
+app.config['MONGODB_SETTINGS'] = {
+    'db': DB,
+    'host': MONGO_ENDPOINT,
+    'port': int(MONGO_PORT)
+}
 
 
 db = MongoEngine()
@@ -35,7 +41,7 @@ def verify_session(f):
         else:
             return json.dumps({'Error': 'UnAuthorized'}), 401, {'ContentType': 'application/json'}
     return decorated_func
-    
+
 @app.route('/logout', methods=['GET', 'POST'])
 def athlete_logout():
     session.pop('email')
@@ -252,9 +258,5 @@ def availability_query():
     return jsonify(res)
 
 
-
 if __name__ == "__main__":
-    app.run(debug=True)
-
-
-    
+    app.run(host='0.0.0.0', port=API_SVR_PORT, debug=True)
