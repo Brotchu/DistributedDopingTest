@@ -3,12 +3,9 @@ import json
 from flask_mongoengine import MongoEngine
 from pymysql import Date
 from os import environ
-from bson.json_util import dumps
-from bson.objectid import ObjectId
-from schemaADO import ADO, Emails
+from schemaADO import ADO
 app_loginADO = Blueprint('app_loginADO',__name__)
-from werkzeug.security import generate_password_hash, check_password_hash
-from ado_login import ado_login 
+from werkzeug.security import check_password_hash
 
 
 @app_loginADO.route('/login_ado', methods=['GET', 'POST'])
@@ -23,7 +20,7 @@ def ado_login():
         session['email'] =  ado_email
         # session['name'] = "name"
         # print(session_id)
-        return json.dumps({'Success': True}), 400, {'ContentType': 'application/json'}
+        return json.dumps({'Success': True}), 200, {'ContentType': 'application/json'}
 
         return resp
     else:
@@ -34,5 +31,5 @@ app_logoutADO = Blueprint('app_logoutADO',__name__)
 @app_logoutADO.route('/logout_ado', methods=['GET', 'POST'])
 def ado_logout():
     session.pop('email')
-    return json.dumps({'Success': True}), 400, {'ContentType': 'application/json'}
+    return json.dumps({'Success': True}), 200, {'ContentType': 'application/json'}
     return resp

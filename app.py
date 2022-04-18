@@ -3,12 +3,13 @@ import json
 import os
 from functools import wraps
 
-from flask import Flask, jsonify, make_response, request, session
+from flask import Flask, jsonify, make_response, request, session, Blueprint
 from flask_mongoengine import MongoEngine, MongoEngineSessionInterface
 from sklearn.datasets import make_regression
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from athlete_login import athlete_login
+from registerADOAdmin import app_registerADO
+# from athlete_login import athlete_login
 from schema import Athlete, Emails
 
 MONGO_ENDPOINT = os.environ.get('CS7NS6_MONGO_ENDPOINT', default='localhost')
@@ -41,6 +42,9 @@ def verify_session(f):
         else:
             return json.dumps({'Error': 'UnAuthorized'}), 401, {'ContentType': 'application/json'}
     return decorated_func
+
+#Blue prints for ADO
+app.register_blueprint(app_registerADO)
 
 @app.route('/logout', methods=['GET', 'POST'])
 def athlete_logout():
@@ -173,11 +177,7 @@ def availability():
     
     Athlete.objects(email=email_).update(__raw__= updateList)
 
-<<<<<<< HEAD
     return json.dumps({'Availability for ': ' Email : '  + ' is updated!'})
-=======
-    return jsonify({'Availability is updated!'})
->>>>>>> ados_branch
 
 # query：getbyEmail, byName，byNationality
 # @app.route("/availability/getInfo", methods=['POST'])
