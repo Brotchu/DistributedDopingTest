@@ -173,7 +173,11 @@ def availability():
     
     Athlete.objects(email=email_).update(__raw__= updateList)
 
+<<<<<<< HEAD
     return json.dumps({'Availability for ': ' Email : '  + ' is updated!'})
+=======
+    return jsonify({'Availability is updated!'})
+>>>>>>> ados_branch
 
 # query：getbyEmail, byName，byNationality
 # @app.route("/availability/getInfo", methods=['POST'])

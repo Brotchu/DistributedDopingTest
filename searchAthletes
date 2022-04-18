@@ -1,0 +1,11 @@
+import pymongo
+
+myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+mydb = myclient["test_db"]
+mycol = mydb["athlete"]
+
+
+for x in mycol.find({},{ "availability": {'2021-02-12'} }):
+  print(x)
+
+
