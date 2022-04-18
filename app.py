@@ -6,9 +6,12 @@ from sklearn.datasets import make_regression
 from schema import Athlete, Emails
 from athlete_login import athlete_login
 from werkzeug.security import generate_password_hash, check_password_hash
+from athlete_login import athlete_login_blueprint
+
 
 
 app = Flask(__name__)
+app.register_blueprint(athlete_login_blueprint)
 app.secret_key='SECRET_KEY' #TODO: change it!
 app.config['MONGODB_SETTINGS'] =  {
     'db': 'TestDB',
@@ -53,7 +56,7 @@ def athlete_logout():
 #     resp = make_response(json.dumps({'Success': True}), 200, {'ContentType': 'application/json'})
 #     return resp
 
-
+"""
 @app.route('/login', methods=['POST'])
 def athlete_login():
     athlete_email = request.form['email']
@@ -70,7 +73,7 @@ def athlete_login():
         return resp
     else:
         return json.dumps({'Error': 'Incorrect username or password'}), 400, {'ContentType': 'application/json'}
-
+"""
 @app.route('/')
 def index():
     return render_template('index.html')
