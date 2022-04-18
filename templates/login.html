@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<style>
+    body {font-family:Arial, Helvetica, sans-serif;}
+
+    input[input=text], input[type=password] {
+    width: 100%;
+    padding: auto;
+    margin: auto;
+    display: inline-block;
+    border:1px solid #ccc;
+    box-sizing: border-box;
+    }
+
+    /*setting astyle for buttons*/
+    button {
+        background-color: #021d24;
+        color: white;
+        padding: 14px 20px;
+        margin: auto;
+        border: none;
+        cursor: pointer
+        width: 100%;
+    }
+    button:hover {
+        opacity:0.8;
+    }
+    /*cancel button*/
+    .cancelbtn {
+        width: auto;
+        padding: 10px 18px;
+        background-color: rgb(209, 125, 29);
+    }
+</style>
+
+<h2>Athlete Login</h2>
+
+<div>
+    <label for="uname"><b>Email</b></label>
+    <input type="="text placeholder="Enter Email"name="email" required>
+    <br>
+
+    <label for ="psw"><b>Password</b></label>
+    <input type="password" placeholder="="Enter Password| name="psw" required>
+    <br>
+
+    <button type="submit">Login</button>
+    <label>
+        <input type="checkbox" checked="checked" name="remember"> Remember me </label>
+</div>
