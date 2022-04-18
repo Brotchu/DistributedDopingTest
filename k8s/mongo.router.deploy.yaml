@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-router-svr
+spec:
+  selector:
+    matchLabels:
+      app: mongo-router-svr
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mongo-router-svr
+    spec:
+      containers:
+        - name: mongo-router-svr
+          image: docker.io/library/mongo:5.0-focal
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: "root"
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: "root"
+            - name: MONGO_PORT
+              value: "27017"
+            - name: MONGO_DOMAIN
+              value: "cs7ns6"
+            - name: MONGO_ROUTER_CFG_LABEL
+              value: "mongo-cfg-svr"
+            - name: MONGO_ROUTER_CFG_SVR_REPLICA_SIZE
+              value: "3"
+          ports:
+            - containerPort: 27017
+          command:
+            - /scripts/run-router-svr
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+      volumes:
+        - name: scripts
+          configMap:
+            name: mongo-cm
+            defaultMode: 0755

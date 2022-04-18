@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo-shard-gb-svr
+spec:
+  serviceName: cs7ns6
+  selector:
+    matchLabels:
+      app: mongo-shard-gb-svr
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: mongo-shard-gb-svr
+        domain: cs7ns6
+    spec:
+      containers:
+        - name: mongo-shard-gb-svr
+          image: docker.io/library/mongo:5.0-focal
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: "root"
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: "root"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MONGO_PORT
+              value: "27017"
+            - name: MONGO_LABEL
+              value: "mongo-shard-gb-svr"
+            - name: MONGO_PRIMARY_POD_NAME
+              value: "$(MONGO_LABEL)-0"
+            - name: MONGO_DOMAIN
+              value: "cs7ns6"
+            - name: MONGO_REPLICA_SIZE
+              value: "3"
+          ports:
+            - containerPort: 27017
+          command:
+            - /scripts/run-shard-svr
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+            - name: data
+              mountPath: /data/db
+      volumes:
+        - name: scripts
+          configMap:
+            name: mongo-cm
+            defaultMode: 0755
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources:
+          requests:
+            storage: 200Mi
+        storageClassName: mongo-storage

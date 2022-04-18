@@ -1,0 +1,87 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongo-cm
+data:
+  run-config-svr: |-
+    #!/bin/bash
+
+    mongod --configsvr --bind_ip_all --replSet ${MONGO_LABEL}-rs --port ${MONGO_PORT:-27017} --dbpath /data/db
+
+  run-shard-svr: |-
+    #!/bin/bash
+
+    mongod --shardsvr --bind_ip_all --replSet ${MONGO_LABEL}-rs --port ${MONGO_PORT:-27017} --dbpath /data/db
+
+  run-router-svr: |-
+    #!/bin/bash
+
+    REPLICA_SET=${MONGO_ROUTER_CFG_LABEL}-rs
+    HOSTS=${MONGO_ROUTER_CFG_LABEL}-0.${MONGO_DOMAIN}.default.svc.cluster.local:${MONGO_PORT}
+    for ((i=1;i<${MONGO_ROUTER_CFG_SVR_REPLICA_SIZE};i++)); do
+      HOSTS=${HOSTS},${MONGO_ROUTER_CFG_LABEL}-${i}.${MONGO_DOMAIN}.default.svc.cluster.local:${MONGO_PORT}
+    done
+
+    mongos --configdb ${REPLICA_SET}/${HOSTS} --bind_ip_all --port ${MONGO_PORT:-27017}
+
+  setup-replica.js: |-
+    function setup() {
+      if (process.env.POD_NAME != process.env.MONGO_PRIMARY_POD_NAME) {
+        return
+      }
+
+      const cfg = {
+        _id: `${process.env.MONGO_LABEL}-rs`,
+        members: []
+      }
+
+      for (let i = 0; i < process.env.MONGO_REPLICA_SIZE; i++) {
+        cfg.members.push({
+          _id: i,
+          host: `${process.env.MONGO_LABEL}-${i}.${process.env.MONGO_DOMAIN}.default.svc.cluster.local:${process.env.MONGO_PORT ? process.env.MONGO_PORT : 27017}`
+        })
+      }
+
+      rs.initiate(cfg)
+    }
+
+    setup()
+
+  setup-router.js: |-
+    function setup() {
+      const locations = [__LOCATIONS__]
+      const replicas = __SHARD_SVR_REPLICAS__
+      const collection = '__COLLECTION__'
+      const db_name = '__DB__'
+
+      db = db.getSiblingDB(db_name)
+
+      for (let i = 0; i < locations.length; i++) {
+        let str = `mongo-shard-${locations[i]}-svr-rs/`
+        for (let j = 0; j < replicas; j++) {
+          str += `mongo-shard-${locations[i]}-svr-${j}.cs7ns6.default.svc.cluster.local:27017,`
+        }
+        sh.addShard(str.slice(0, -1))
+      }
+
+      db.createCollection(collection)
+      sh.enableSharding(db_name)
+      for (let i = 0; i < locations.length; i++) {
+        sh.addShardToZone(`mongo-shard-${locations[i]}-svr-rs`, `${locations[i]}`)
+        sh.updateZoneKeyRange(`${db_name}.${collection}`, 
+          { 
+            nationality: locations[i], 
+            email: MinKey 
+          }, 
+          { 
+            nationality: locations[i], 
+            email: MaxKey 
+          }, 
+          locations[i]
+        )
+      }
+
+      sh.shardCollection(`${db_name}.${collection}`, { nationality: 1, email: 1 } )
+    }
+
+    setup()
