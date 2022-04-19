@@ -1,7 +1,6 @@
 let url="formtest"
 
-function makePostRequest(urlPath, jsonDataString){
-    // console.log(urlPath)
+function makePostRequest(urlPath, jsonDataString) {
     fetch(urlPath, {
         method: "POST",
         headers: {'Content-Type': 'application/json'},
