@@ -164,6 +164,7 @@ def register_athlete():
 @verify_session
 def availability():
     object_ = request.get_json()
+
     email_ = session.get('email')
   
     updateList = []

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <title>Index</title>
+    <link rel="stylesheet" href="css/layui.css" media="all">
+</head>
+
+<body>
+
+<h1 align="center">ADO</h1>
+
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+  <legend>Registration</legend>
+</fieldset>
+
+<form action="" id="adoRegistration" class="layui-form">
+
+
+    <div class="layui-form-item">
+    <label class="layui-form-label">Email</label>
+    <div class="layui-input-block">
+      <input type="text" name="email" lay-verify="email" lay-reqtext="Required Item!" placeholder="Input" autocomplete="off" class="layui-input">
+    </div>
+
+        <br>
+
+    <div class="layui-form-item">
+    <label class="layui-form-label">Name</label>
+    <div class="layui-input-block">
+      <input type="text" name="username" lay-verify="required" lay-reqtext="Required Item!" placeholder="Input" autocomplete="off" class="layui-input">
+    </div>
+
+        <br>
+
+    <div class="layui-form-item">
+    <label class="layui-form-label">Password</label>
+    <div class="layui-input-block">
+        <input type="password" name="password" lay-verify="required" lay-reqtext="Required Item!" placeholder="******" autocomplete="off" class="layui-input">
+    </div>
+
+        <br>
+
+    <div class="layui-form-item">
+    <label class="layui-form-label">Confirm Password</label>
+    <div class="layui-input-block">
+       <input type="password" name="password" lay-verify="required" lay-reqtext="Required Item!" placeholder="******" autocomplete="off" class="layui-input">
+    </div>
+
+        <br>
+
+    <div>
+        <a href="">
+            <button type="submit" class="layui-btn layui-btn-primary layui-border" id="submit_ado_registration">Submit</button>
+        </a>
+    </div>
+
+        
+</form>
+
+
+<script src="js/layui.js" charset="utf-8"></script>
+
+</body>
+</html>
