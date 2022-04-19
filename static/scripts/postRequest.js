@@ -38,3 +38,29 @@ if (athleteRegistration) {
         makeAthleteRegistration(e, this);
     });
 }
+
+//ado
+
+async function makeAdoRegistration(e, form) {
+    e.preventDefault();
+
+    const btnSubmit = document.getElementById('submit_ado_registration');
+    btnSubmit.disabled= true;
+    setTimeout(()=> btnSubmit.disabled = false, 2000);
+
+    // json from form
+    const jsonData = {};
+    for (const pair of new FormData(form)) {
+        jsonData[pair[0]] = pair[1];
+    }
+    console.log(jsonData);
+    makePostRequest('register', JSON.stringify(jsonData));
+}
+
+
+const adoRegistration = document.querySelector("#adoRegistration");
+if (adoRegistration) {
+    athleteRegistration.addEventListener("submit", function(e){
+        makeAdoRegistration(e, this);
+    });
+}
