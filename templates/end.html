@@ -3,7 +3,8 @@
 <head>
  <meta charset="UTF-8">
  <title>End</title>
-    <link rel="stylesheet" href="css/layui.css" media="all">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/layui.css') }}" media="all">
+
 </head>
 
 <body>
@@ -12,7 +13,7 @@
 <br>
 
     <div class="" align="center">
-        <a href="/availability">
+        <a href="/availability_page">
             <button type="button" class="layui-btn layui-btn-primary layui-btn-lg">Back</button>
         </a>
       <br><br>
@@ -22,6 +23,6 @@
     </div>
 
 
-<script src="js/layui.js" charset="utf-8"></script>
+<script src="{{url_for('static', filename='scripts/postRequest.js') }}"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8">
  <title>Availability</title>
-    <link rel="stylesheet" href="css/layui.css" media="all">
+        <link rel="stylesheet" href="{{url_for('static', filename='css/layui.css') }}" media="all">
 </head>
 
 <body>
@@ -15,32 +15,33 @@
   <legend>Availability</legend>
 </fieldset>
 
-<form action="http://localhost:63342/DistributedDopingTest/templates/end.html?_ijt=6u60pq19gueph0olijs45ljdof" id="adoRegistration" class="layui-form">
+<form action="" id="availability" class="layui-form">
 
 
     <div class="layui-form-item">
     <label class="layui-form-label">Date</label>
     <div class="layui-input-block">
-      <input type="text" name="date" lay-verify="required" lay-reqtext="Required Item!" placeholder="eg.20220417" autocomplete="off" class="layui-input">
+      <input type="text" name="Date" lay-verify="required" lay-reqtext="Required Item!" placeholder="eg.20220417" autocomplete="off" class="layui-input">
     </div>
 
         <br>
 
     <div class="layui-form-item">
-    <label class="layui-form-label">Availability</label>
+    <label class="layui-form-label">Location</label>
     <div class="layui-input-block">
-      <input type="text" name="availability" lay-verify="required" lay-reqtext="Required Item!" placeholder="eg.IE" autocomplete="off" class="layui-input">
+      <input type="text" name="Location" lay-verify="required" lay-reqtext="Required Item!" placeholder="eg.IE" autocomplete="off" class="layui-input">
     </div>
 
         <br>
 
     <div>
-        <button type="submit" class="layui-btn layui-btn-primary layui-border">Submit</button>
+        <button type="submit" id="submit_availability" class="layui-btn layui-btn-primary layui-border">Submit</button>
     </div>
 
 
 </form>
 
-<script src="js/layui.js" charset="utf-8"></script>
+<script src="{{url_for('static', filename='scripts/postRequest.js') }}"></script>
+
 </body>
 </html>
