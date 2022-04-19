@@ -60,6 +60,14 @@ def serve_athlete_login_page():
 def serve_athlete_reg_form():
     return render_template('register_athlete.html')
 
+@app.route('/ado_login_form')
+def serve_ado_login_page():
+    return render_template('login_ado.html')
+
+@app.route('/ado_register_form')
+def serve_ado_reg_form():
+    return render_template('register_ado.html')
+
 @app.route('/success_page')
 def serve_success_page():
     return render_template('success.html')
