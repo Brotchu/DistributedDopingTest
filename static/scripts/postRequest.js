@@ -1,49 +1,40 @@
 let url="formtest"
 
 function makePostRequest(urlPath, jsonDataString) {
-    fetch(url, {
+    fetch(urlPath, {
         method: "POST",
         headers: {'Content-Type': 'application/json'},
         body: jsonDataString
     }).then(res => {
         console.log(res)
+        if(res.status==200) {
+            window.location.replace("/success_page");
+        }
     });
 }
 
 
-async function submitAthleteRegistration(e, form){
+
+async function makeAthleteRegistration(e, form) {
     e.preventDefault();
 
-    const btnSubmit = document.getElementById('submitRegistration');
+    const btnSubmit = document.getElementById('submit_athlete_registration');
     btnSubmit.disabled= true;
     setTimeout(()=> btnSubmit.disabled = false, 2000);
 
-    //json from form
+    // json from form
     const jsonData = {};
     for (const pair of new FormData(form)) {
         jsonData[pair[0]] = pair[1];
     }
     console.log(jsonData);
-    makePostRequest(url, JSON.stringify(jsonData));
-    //use athleteRegisterRequest
+    makePostRequest('register', JSON.stringify(jsonData));
 }
 
-const registrationForm = document.querySelector("#athleteRegistration");
-if (registrationForm){
-    registrationForm.addEventListener("submit", function(e){
-        submitAthleteRegistration(e, this);
+
+const athleteRegistration = document.querySelector("#athleteRegistration");
+if (athleteRegistration) {
+    athleteRegistration.addEventListener("submit", function(e){
+        makeAthleteRegistration(e, this);
     });
 }
-
-
-// var xhr = new XMLHttpRequest();
-    // xhr.open("POST", url, true );
-    // xhr.setRequestHeader('Content-Type', 'application/json');
-    // xhr.send(JSON.stringify({
-    //     name: name,
-    //     email: email,
-    //     password: password, 
-    //     confirm_password: confirm_password,
-    //     country: country,
-    //     location: location
-    // }));

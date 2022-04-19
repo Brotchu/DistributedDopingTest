@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8">
  <title>Register</title>
-    <link rel="stylesheet" href="css/layui.css" media="all">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/layui.css') }}" media="all">
 </head>
 
 <body>
@@ -14,7 +14,8 @@
   <legend>Registration</legend>
 </fieldset>
 
-<form action="http://localhost:63342/DistributedDopingTest/templates/success.html?_ijt=rpq8tv6rb53usdckorl01turcj" id="athleteRegistration" class="layui-form">
+<form action="" id="athleteRegistration" class="layui-form">
+  <!-- http://localhost:63342/DistributedDopingTest/templates/success.html?_ijt=rpq8tv6rb53usdckorl01turcj -->
 
 
     <div class="layui-form-item">
@@ -28,7 +29,7 @@
     <div class="layui-form-item">
     <label class="layui-form-label">Name</label>
     <div class="layui-input-block">
-      <input type="text" name="username" lay-verify="required" lay-reqtext="Required Item!" placeholder="Input" autocomplete="off" class="layui-input">
+      <input type="text" name="name" lay-verify="required" lay-reqtext="Required Item!" placeholder="Input" autocomplete="off" class="layui-input">
     </div>
 
         <br>
@@ -44,7 +45,7 @@
     <div class="layui-form-item">
     <label class="layui-form-label">Confirm Password</label>
     <div class="layui-input-block">
-       <input type="password" name="password" lay-verify="required" lay-reqtext="Required Item!" placeholder="******" autocomplete="off" class="layui-input">
+       <input type="password" name="confirm_password" lay-verify="required" lay-reqtext="Required Item!" placeholder="******" autocomplete="off" class="layui-input">
     </div>
 
         <br>
@@ -74,7 +75,8 @@
 </form>
 
 
-<script src="js/layui.js" charset="utf-8"></script>
+<script src="{{url_for('static', filename='scripts/postRequest.js') }}"></script>
+<!-- <script src="js/layui.js" charset="utf-8"></script> -->
 
 </body>
 </html>
