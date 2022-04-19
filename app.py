@@ -1,7 +1,7 @@
 # 
 
 from functools import wraps
-from flask import Flask, make_response, render_template, request, session, jsonify
+from flask import Flask, make_response, render_template, request, session, jsonify, redirect
 import json
 import os
 from functools import wraps
@@ -45,9 +45,24 @@ def verify_session(f):
         else:
             return json.dumps({'Error': 'UnAuthorized'}), 401, {'ContentType': 'application/json'}
     return decorated_func
-
 #Blue prints for ADO
-app.register_blueprint(app_registerADO)
+app.register_blueprint(app_registerADO)    
+
+@app.route('/')
+def serve_home_page():
+    return render_template('index.html')
+
+@app.route('/athlete_login_form')
+def serve_athlete_login_page():
+    return render_template('login_athlete.html')
+
+@app.route('/athlete_register_form')
+def serve_athlete_reg_form():
+    return render_template('register_athlete.html')
+
+@app.route('/success_page')
+def serve_success_page():
+    return render_template('success.html')
 
 @app.route('/logout', methods=['GET', 'POST'])
 def athlete_logout():
@@ -101,13 +116,17 @@ def register_athlete():
         return json.dumps({'Error': 'method not allowed'}), 405, {'ContentType': 'application/json'}
 
     #get info from form
-    athlete_name = request.form['name']
-    athlete_email = request.form['email']
-    password = request.form['password']
-    confirm_password = request.form['confirm_password']
-    nationality = request.form['nationality']
-    location = request.form['location']
+    reqBody = request.get_json()
+    athlete_name = reqBody['name']
+    athlete_email = reqBody['email']
+    password = reqBody['password']
+    confirm_password = reqBody['confirm_password']
+    nationality = reqBody['nationality']
+    location = reqBody['location']
     availability = {}
+
+    print("register -------------")
+    print(athlete_name, athlete_email, password, confirm_password, nationality, location)
 
     if not athlete_name:
         return json.dumps({'Error': 'required Athlete Name'}), 400, {'ContentType': 'application/json'}
@@ -151,7 +170,10 @@ def register_athlete():
 
         return json.dumps({'Error': 'internal server error'}), 500, {'ContentType': 'application/json'}
     
-    return json.dumps({'Success': True}), 200, {'ContentType': 'application/json'}
+    return render_template("index.html", code=200)
+    # return redirect("/", code=302)
+    # return json.dumps({'Success': True}), 200, {'ContentType': 'application/json'}
+    
     #save
     # try:
     #     Athlete(name=athlete_name,
