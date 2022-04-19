@@ -10,8 +10,10 @@ from werkzeug.security import check_password_hash
 
 @app_loginADO.route('/login_ado', methods=['GET', 'POST'])
 def ado_login():
-    ado_email = request.form['email']
-    ado_password = request.form['password']
+    reqBody = request.get_json()
+
+    ado_email = reqBody['email']
+    ado_password = reqBody['password']
     #check if already present in session
     if session.get('email') == ado_email:
         return make_response(json.dumps({'Success': True, 'status': 'logged in already'}), 200, {'ContentType': 'application/json'})

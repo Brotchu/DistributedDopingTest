@@ -14,11 +14,12 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from registerADOAdmin import app_registerADO
 # from athlete_login import athlete_login
 from schema import Athlete, Emails
+from ado_login_logout import app_loginADO, app_logoutADO
 
 MONGO_ENDPOINT = os.environ.get('CS7NS6_MONGO_ENDPOINT', default='localhost')
 MONGO_PORT = os.environ.get('CS7NS6_MONGO_PORT', default='27017')
-DB = os.environ.get('CS7NS6_USE_DB', default='cs7ns6')
-API_SVR_PORT = os.environ.get('CS7NS6_API_SVR_PORT', default='8080')
+DB = os.environ.get('CS7NS6_USE_DB', default='TestDB')
+API_SVR_PORT = os.environ.get('CS7NS6_API_SVR_PORT', default='5000')
 
 
 app = Flask(__name__)
@@ -29,6 +30,9 @@ app.config['MONGODB_SETTINGS'] = {
     'port': int(MONGO_PORT),
 }
 
+app.register_blueprint(app_registerADO)
+app.register_blueprint(app_loginADO)
+app.register_blueprint(app_logoutADO)
 
 db = MongoEngine()
 app.session_interface = MongoEngineSessionInterface(db)
@@ -46,7 +50,6 @@ def verify_session(f):
             return json.dumps({'Error': 'UnAuthorized'}), 401, {'ContentType': 'application/json'}
     return decorated_func
 #Blue prints for ADO
-app.register_blueprint(app_registerADO)    
 
 @app.route('/')
 def serve_home_page():

@@ -1,6 +1,7 @@
 let url="formtest"
 
-function makePostRequest(urlPath, jsonDataString) {
+function makePostRequest(urlPath, jsonDataString){
+    // console.log(urlPath)
     fetch(urlPath, {
         method: "POST",
         headers: {'Content-Type': 'application/json'},
@@ -53,14 +54,39 @@ async function makeAdoRegistration(e, form) {
     for (const pair of new FormData(form)) {
         jsonData[pair[0]] = pair[1];
     }
-    console.log(jsonData);
-    makePostRequest('register', JSON.stringify(jsonData));
+    console.log(JSON.stringify(jsonData));
+    makePostRequest('register_ado', JSON.stringify(jsonData));
 }
 
 
 const adoRegistration = document.querySelector("#adoRegistration");
 if (adoRegistration) {
-    athleteRegistration.addEventListener("submit", function(e){
+    adoRegistration.addEventListener("submit", function(e){
         makeAdoRegistration(e, this);
+    });
+}
+
+
+async function makeAdoLogin(e, form) {
+    e.preventDefault();
+
+    const btnSubmit = document.getElementById('submit_ado_login');
+    btnSubmit.disabled= true;
+    setTimeout(()=> btnSubmit.disabled = false, 2000);
+
+    // json from form
+    const jsonData = {};
+    for (const pair of new FormData(form)) {
+        jsonData[pair[0]] = pair[1];
+    }
+    console.log(JSON.stringify(jsonData));
+    makePostRequest('login_ado', JSON.stringify(jsonData));
+}
+
+
+const adoLogin = document.querySelector("#adoLogin");
+if (adoLogin) {
+    adoLogin.addEventListener("submit", function(e){
+        makeAdoLogin(e, this);
     });
 }
