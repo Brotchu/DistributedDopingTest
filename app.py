@@ -49,16 +49,24 @@ def verify_session(f):
             return json.dumps({'Error': 'UnAuthorized'}), 401, {'ContentType': 'application/json'}
     return decorated_func
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 def verify_ado_session(f):
     @wraps(f)
     def decorated_func(*args, **kwargs):
         if session.get("ado_email"):
             return f(*args, **kwargs)
         else:
+<<<<<<< Updated upstream
             return json.dumps({'Error': 'Unauthorizied admin'}), 401, {'ContentType': 'application/json'}
     return decorated_func
 
+=======
+            return json.dumps({'Error' : 'Unauthorizied admin'}), 401, {'ContentType': 'application/json'}
+    return decorated_func
+>>>>>>> Stashed changes
 
 @app.route('/')
 def serve_home_page():
@@ -210,6 +218,35 @@ def availability():
         updateDict['$set'] = {'availability.'+avl['Date']: avl['Location']}
         updateList.append(updateDict)
     print(updateList)
+<<<<<<< Updated upstream
+=======
+    
+    Athlete.objects(email=email_).update(__raw__= updateList)
+
+    return json.dumps('Availability for '+  email_  + ' is updated!')
+
+# query：getbyEmail, byName，byNationality
+# @app.route("/availability/getInfo", methods=['POST'])
+# @verify_session
+# def availability_query():
+#     object_ = request.get_json()
+#
+#     d={}
+#
+#     if "nationality" in object_.keys():
+#         d["nationality"] = object_['nationality']
+#     if "name" in object_.keys():
+#         d["name"] = object_['name']
+#     if "email" in object_.keys():
+#         d["email"] = object_['email']
+#
+#     print(d)
+#
+#     print("obj:"+str(object_))
+#     res = Athlete.objects(__raw__= d)
+#
+#     return jsonify(res)
+>>>>>>> Stashed changes
 
     Athlete.objects(email=email_).update(__raw__=updateList)
 
@@ -217,7 +254,7 @@ def availability():
 
 
 @app.route("/availability/getInfo", methods=['POST'])
-@verify_session
+# @verify_ado_session
 def availability_query():
     object_ = request.get_json()
     email_ = session.get('email')
@@ -255,7 +292,7 @@ def availability_ado_query():
         d["name"] = object_['name']
     if "email" in object_.keys():
         d["email"] = object_['email']
-
+    
     s_ = 0
     e_ = 0
     if "start" in object_.keys():
@@ -263,6 +300,16 @@ def availability_ado_query():
     if "end" in object_.keys():
         e_ = int(object_['end'])
     # print(s_,e_)
+
+    queryLocation = "location" in object_.keys()
+    if queryLocation:
+        availability_list =[]
+        if s_ != 0 and e_ != 0:
+            for i in range(s_, e_):
+                availDict = {}
+                availDict["availability."+str(i)] = object_["location"]
+                availability_list.append(availDict)
+            d["$or"]= availability_list
 
     arg_list = []
     if s_ != 0 and e_ != 0:
