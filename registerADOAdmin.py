@@ -56,6 +56,6 @@ def register_ados():
 
         return json.dumps({'Error': 'internal server error'}), 500, {'ContentType': 'application/json'}
     
-    return json.dumps({'Success': True}), 400, {'ContentType': 'application/json'}
+    return json.dumps({'Success': True}), 200, {'ContentType': 'application/json'}
     #save
 

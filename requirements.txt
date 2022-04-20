@@ -3,3 +3,4 @@ flask
 Werkzeug
 flask_mongoengine
 sklearn
+pymysql

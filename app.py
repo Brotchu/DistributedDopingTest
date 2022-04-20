@@ -91,12 +91,19 @@ def register_athlete():
         return json.dumps({'Error': 'method not allowed'}), 405, {'ContentType': 'application/json'}
     
     #get info from form
-    athlete_name = request.form['name']
-    athlete_email = request.form['email']
-    password = request.form['password']
-    confirm_password = request.form['confirm_password']
-    nationality = request.form['nationality']
-    location = request.form['location']
+    reqJson = request.get_json()
+    athlete_name = reqJson['name']
+    athlete_email = reqJson['email']
+    password = reqJson['password']
+    confirm_password = reqJson['confirm_password']
+    nationality = reqJson['nationality']
+    location = reqJson['location']
+    # athlete_name = request.form['name']
+    # athlete_email = request.form['email']
+    # password = request.form['password']
+    # confirm_password = request.form['confirm_password']
+    # nationality = request.form['nationality']
+    # location = request.form['location']
     availability = {}
 
     if not athlete_name:

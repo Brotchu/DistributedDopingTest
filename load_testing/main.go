@@ -64,6 +64,7 @@ func NewRegistrationData(user, c, l string) *RegistraionData {
 }
 
 func registrationWorker(ip string, inchan chan *RegistraionData, wg *sync.WaitGroup) {
+	client := &http.Client{}
 	for {
 		athlete := <-inchan
 		if athlete == nil {
@@ -73,14 +74,13 @@ func registrationWorker(ip string, inchan chan *RegistraionData, wg *sync.WaitGr
 		if err != nil {
 			log.Panicln(err.Error())
 		}
-		log.Println(string(jsonData))
+		// log.Println(string(jsonData))
 		request, err := http.NewRequest("POST", ip, bytes.NewBuffer(jsonData))
 		if err != nil {
 			log.Panicln(err.Error())
 		}
 		request.Header.Set("Content-Type", "application/json; charset=UTF-8")
 
-		client := &http.Client{}
 		resp, err := client.Do(request)
 		if err != nil {
 			log.Panicln(err.Error())
