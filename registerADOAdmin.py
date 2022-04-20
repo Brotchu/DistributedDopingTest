@@ -9,7 +9,7 @@ from bson.objectid import ObjectId
 from schemaADO import ADO, Emails
 
 from werkzeug.security import generate_password_hash, check_password_hash
-from ado_login import ado_login 
+# from ado_login import ado_login
 
 app_registerADO = Blueprint('app',__name__)
 
@@ -19,10 +19,12 @@ def register_ados():
         return json.dumps({'Error': 'method not allowed'}), 405, {'ContentType': 'application/json'}
     
     #get info from form
-    ado_name = request.form['name']
-    ado_email = request.form['email']
-    ado_password = request.form['password']
-    ado_confirm_password = request.form['confirm_password']
+    reqBody = request.get_json()
+
+    ado_name = reqBody['name']
+    ado_email = reqBody['email']
+    ado_password = reqBody['password']
+    ado_confirm_password = reqBody['confirm_password']
     if not ado_name:
         return json.dumps({'Error': 'required  Name'}), 400, {'ContentType': 'application/json'}
     elif not ado_email:

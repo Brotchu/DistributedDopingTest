@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Register</title>
+  <link rel="stylesheet" href="{{url_for('static', filename='css/layui.css') }}" media="all">
+</head>
+
+<body>
+  <h1 align="center">ADO</h1>
+
+  <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+    <legend>Login</legend>
+  </fieldset>
+
+  <form action="/" id="adoLogin" class="layui-form">
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">Email</label>
+      <div class="layui-input-block">
+        <input type="text" name="email" lay-verify="email" lay-reqtext="Required Item!" placeholder="Input"
+          autocomplete="off" class="layui-input">
+      </div>
+
+      <br>
+      <div class="layui-form-item">
+        <label class="layui-form-label">Password</label>
+        <div class="layui-input-block">
+          <input type="password" name="password" lay-verify="required" lay-reqtext="Required Item!" placeholder="******"
+            autocomplete="off" class="layui-input">
+        </div>
+
+        <br>
+        <div class="layui-form-item">
+          <button type="submit" class="layui-btn layui-btn-primary layui-border" id="submit_ado_login">Submit</button>
+        </div>
+  </form>
+
+  <script src="{{url_for('static', filename='scripts/postRequest.js') }}"></script>
+
+</body>
+
+</html>

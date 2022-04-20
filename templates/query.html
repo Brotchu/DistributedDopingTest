@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ADO Query</title>
+    <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+    <script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+    <script src="//unpkg.com/jquery@3.3.1/dist/jquery.min.js"></script>
+</head>
+
+<body>
+    <h1 align="center">ADO</h1>
+
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+        <legend>Filters</legend>
+    </fieldset>
+
+    <form action="" id="adoQuery" class="layui-form">
+        <label class="layui-form-label">Email</label>
+        <div class="layui-input-block">
+            <input type="text" id="email" name="email" lay-verify="email" lay-reqtext="Required Item!"
+                placeholder="Input" autocomplete="off" class="layui-input">
+        </div>
+
+        <br>
+
+        <label class="layui-form-label">Name</label>
+        <div class="layui-input-block">
+            <input type="text" id="name" name="name" lay-verify="name" lay-reqtext="Required Item!" placeholder="Input"
+                autocomplete="off" class="layui-input">
+        </div>
+
+        <br>
+
+        <label class="layui-form-label">Location</label>
+        <div class="layui-input-block" id="locationDropDown">
+            <input type="text" id="location" name="Location" lay-verify="required" lay-reqtext="Required Item!"
+                placeholder="eg.IE" autocomplete="off" class="layui-input">
+        </div>
+
+        <br>
+
+        <div class="layui-inline" id="dateRange">
+            <label class="layui-form-label">From:</label>
+            <div class="layui-input-block">
+                <input type="text" id="startDate" name="startDate" lay-verify="required" lay-reqtext="Required Item!"
+                    placeholder="eg.20220417" autocomplete="off" class="layui-input">
+            </div>
+
+            <br>
+
+            <label class="layui-form-label">To:</label>
+            <div class="layui-input-block">
+                <input type="text" id="endDate" name="endDate" lay-verify="required" lay-reqtext="Required Item!"
+                    placeholder="eg.20220417" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <br>
+
+        <div class="layui-form-item">
+            <button type="submit" class="layui-btn layui-btn-primary layui-border" id="submit_ado_query">Submit</button>
+        </div>
+
+        <table class="layui-table" id="result-tbl">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Nationality</th>
+                    <th>Availability</th>
+                </tr>
+            </thead>
+            <tbody id="result-tbody">
+                <tr>
+                    <td>yu</td>
+                    <td>yuy4@tcd.ie</td>
+                    <td>ie</td>
+                    <td>
+                        <table class="layui-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Location</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>202222222</td>
+                                    <td>ie</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+
+</body>
+
+<script src="{{url_for('static', filename='scripts/postRequest.js') }}"></script>
+
+<script>
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+
+        laydate.render({
+            elem: '#dateRange',
+            lang: 'en',
+            range: ['#startDate', '#endDate'],
+            format: 'yyyyMMdd'
+        });
+    });
+
+    layui.use('dropdown', function () {
+        var dropdown = layui.dropdown
+        dropdown.render({
+            elem: '#locationDropDown',
+            data: [
+                { title: 'Ireland', value: 'ie' },
+                { title: 'Britain', value: 'gb' },
+                { title: 'German', value: 'de' },
+            ],
+            id: 'locationDropDown',
+            click: function (obj) {
+                console.log(obj);
+                $('#location').val(obj.value);
+            }
+        });
+    });
+
+
+    async function makeAdoQuery(e, form) {
+        e.preventDefault();
+
+        const btnSubmit = document.getElementById('submit_ado_query');
+        btnSubmit.disabled = true;
+        setTimeout(() => btnSubmit.disabled = false, 2000);
+
+        console.log(form);
+
+        const jsonData = {};
+
+        const name = $('#name').val();
+        if (name != "") {
+            jsonData.name = name;
+        }
+
+        const email = $('#email').val();
+        if (email != "") {
+            jsonData.email = email;
+        }
+
+        const location = $('#location').val();
+        if (location != "") {
+            jsonData.nationality = location;
+        }
+
+        const startDate = $('#startDate').val();
+        if (startDate != "") {
+            jsonData.start = startDate;
+        }
+
+        const endDate = $('#endDate').val();
+        if (endDate != "") {
+            jsonData.end = endDate;
+        }
+
+        console.log(JSON.stringify(jsonData));
+
+        return fetch('/availability/ado/getInfo', {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(jsonData)
+        }).then(async res => {
+            console.log(res)
+            if (res.status == 200) {
+
+                const body = await res.json();
+                const tbody = $('#result-tbody');
+                tbody.html("");
+
+                for (let i = 0; i < body.length; i++) {
+                    const _t = $('<tr>')
+                        .append($('<td>').text(body[i].name))
+                        .append($('<td>').text(body[i].email))
+                        .append($('<td>').text(body[i].nationality));
+
+                    const _innerTbl = $('<td>').append(
+                        $('<table class="layui-table">').html('<thread><tr><th>Date</th><th>Location</th></tr></thread>')
+                            .append($('<tbody>')
+                                .append($('<tr>'))
+                            )
+                    )
+
+                    const _innerTblBody = _innerTbl.find('tbody');
+                    Object.keys(body[i].availability).forEach(key => {
+                        const _innerTblTr = $('<tr>')
+                            .append($('<td>').text(key))
+                            .append($('<td>').text(body[i].availability[key]));
+
+                        _innerTblBody.append(_innerTblTr);
+                    })
+
+                    _t.append(_innerTbl);
+                    tbody.append(_t);
+                }
+            }
+        });
+
+    }
+
+
+    const adoQuery = document.querySelector("#adoQuery");
+    if (adoQuery) {
+        adoQuery.addEventListener("submit", function (e) {
+            makeAdoQuery(e, this);
+        });
+    }
+
+</script>
+
+</html>

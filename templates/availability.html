@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Availability</title>
+
+  <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+  <script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+  <script src="//unpkg.com/jquery@3.3.1/dist/jquery.min.js"></script>
+
+</head>
+
+<body>
+  <h1 align="center">ATHLETE</h1>
+
+  <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+    <legend>Availability</legend>
+  </fieldset>
+
+  <form action="" id="availability" class="layui-form">
+    <div class="layui-form-item">
+      <div class="layui-inline" id="dateRange">
+        <label class="layui-form-label">From:</label>
+        <div class="layui-input-block">
+          <input type="text" id="startDate" name="startDate" lay-verify="required" lay-reqtext="Required Item!"
+            placeholder="eg.20220417" autocomplete="off" class="layui-input">
+        </div>
+
+        <br>
+
+        <label class="layui-form-label">To:</label>
+        <div class="layui-input-block">
+          <input type="text" id="endDate" name="endDate" lay-verify="required" lay-reqtext="Required Item!"
+            placeholder="eg.20220417" autocomplete="off" class="layui-input">
+        </div>
+
+      </div>
+    </div>
+
+
+    <div class="layui-form-item">
+      <label class="layui-form-label">Location</label>
+      <div class="layui-input-block" id="locationDropDown">
+        <input type="text" name="Location" id="location" lay-verify="required" lay-reqtext="Required Item!"
+          placeholder="eg.IE" autocomplete="off" class="layui-input">
+      </div>
+
+      <br>
+
+      <button type="submit" id="submit_availability" class="layui-btn layui-btn-primary layui-border">Submit</button>
+
+      <br>
+
+      <ul class="layui-timeline" id="timeline">
+
+      </ul>
+    </div>
+  </form>
+
+</body>
+
+<script src="{{url_for('static', filename='scripts/postRequest.js') }}"></script>
+
+<script>
+  layui.use('laydate', function () {
+    var laydate = layui.laydate;
+
+    laydate.render({
+      elem: '#dateRange',
+      lang: 'en',
+      range: ['#startDate', '#endDate'],
+      format: 'yyyyMMdd'
+    });
+  });
+
+  layui.use('dropdown', function () {
+    var dropdown = layui.dropdown
+    dropdown.render({
+      elem: '#locationDropDown',
+      data: [
+        { title: 'Ireland', value: 'ie' },
+        { title: 'Britain', value: 'gb' },
+        { title: 'German', value: 'de' },
+      ],
+      id: 'locationDropDown',
+      click: function (obj) {
+        console.log(obj);
+        $('#location').val(obj.value);
+      }
+    });
+  });
+
+
+  window.onload = function () {
+    function addDays(date, days) {
+      var result = new Date(date);
+      result.setDate(result.getDate() + days);
+      return result;
+    }
+
+    const start = new Date();
+    const end = addDays(start, 30);
+
+    fetch('/availability/getInfo', {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        start: `${start.getUTCFullYear()}${(start.getUTCMonth() + 1) > 9 ? (start.getUTCMonth() + 1) : "0" + String(start.getUTCMonth() + 1)}${start.getUTCDate()}`,
+        end: `${end.getUTCFullYear()}${(end.getUTCMonth() + 1) > 9 ? (end.getUTCMonth() + 1) : "0" + String(end.getUTCMonth() + 1)}${end.getUTCDate()}`,
+      })
+    }).then(async res => {
+      console.log(res)
+      if (res.status != 200) {
+        return;
+      }
+
+      const body = await res.json();
+      if (body.length == 0) {
+        return;
+      }
+
+      const availability = body[0].availability;
+      const timeline = $('#timeline');
+      Object.keys(availability).forEach(key => {
+        timeline.append(`<li class="layui-timeline-item">\
+                            <i class="layui-icon layui-timeline-axis">&#xe63f;</i>\
+                            <div class="layui-timeline-content layui-text">\
+                              <h3 class="layui-timeline-title">${key} - ${availability[key]}</h3>\
+                            </div>\
+                        </li>`);
+      });
+    });
+  };
+</script>
+
+</html>
