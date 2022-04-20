@@ -1,20 +1,16 @@
-#
-
-from functools import wraps
-from flask import Flask, make_response, render_template, request, session, jsonify, redirect
 import json
 import os
 from functools import wraps
 
-from flask import Flask, jsonify, make_response, request, session, Blueprint
+from flask import (Blueprint, Flask, jsonify, make_response, redirect,
+                   render_template, request, session)
 from flask_mongoengine import MongoEngine, MongoEngineSessionInterface
 from sklearn.datasets import make_regression
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from registerADOAdmin import app_registerADO
-# from athlete_login import athlete_login
-from schema import Athlete, Emails
 from ado_login_logout import app_loginADO, app_logoutADO
+from registerADOAdmin import app_registerADO
+from schema import Athlete, Emails
 
 MONGO_ENDPOINT = os.environ.get('CS7NS6_MONGO_ENDPOINT', default='localhost')
 MONGO_PORT = os.environ.get('CS7NS6_MONGO_PORT', default='27017')
@@ -174,9 +170,7 @@ def register_athlete():
 
     try:
         try:
-            Emails(
-                email=athlete_email
-            ).save()
+            Emails(email=athlete_email).save()
         except:
             return json.dumps({'Error': 'user with email id already exists'}), 500, {'ContentType': 'application/json'}
 

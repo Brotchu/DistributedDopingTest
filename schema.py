@@ -5,20 +5,21 @@ from mongoengine import (DateTimeField, DictField, Document, EmbeddedDocument,
 
 
 class DateAvailability(EmbeddedDocument):
-    date = DateTimeField(required = True)
-    location = StringField(required =True)
+    date = DateTimeField(required=True)
+    location = StringField(required=True)
 
 
 class Athlete(Document):
-    name = StringField(required = True)
-    email = StringField(required = True)
-    password = StringField(required = True) #TODO: hash it!!
-    nationality = StringField(required = True)
-    location = StringField(required = True)
+    name = StringField(required=True)
+    email = StringField(required=True)
+    password = StringField(required=True)  # TODO: hash it!!
+    nationality = StringField(required=True)
+    location = StringField(required=True)
     # availability = db.ListField(db.EmbeddedDocumentField(DateAvailability))
     availability = DictField()
 
-    meta = {'collection' : 'athlete'}
+    meta = {'collection': 'athlete'}
+
 
 class Emails(Document):
-    email = StringField(required=True, unique = True)
+    email = StringField(required=True, unique=True)
