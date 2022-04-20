@@ -1,6 +1,7 @@
 import json
 
 from flask import Blueprint, jsonify, request
+from app import availability
 
 from schema import Athlete
 
@@ -25,11 +26,16 @@ def get_athlete_for_date():
 
 @app_search_blueprint.route('/getAthletesInLocation', methods=['POST'])
 def get_athletes_for_location():
-    location = request.form['location']
-    search_date = request.form['date']
+
+    reqBody = request.get_json()
+
+    location = reqBody['location']
+    start_date = reqBody['startDate']
+    end_date = reqBody['startDate']
+
 
     try:
-        result = Athlete.objects(__raw__= {'availability.'+search_date+'.location': location})
+        result = Athlete.objects(__raw__= {'availability.'+search_date: location})
     except:
         return json.dumps({'Error': 'not sure'}), 400, {'ContentType': 'application/json'}
     if len(result) == 0:
