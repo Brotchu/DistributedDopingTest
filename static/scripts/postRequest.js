@@ -1,15 +1,14 @@
-let url="formtest"
+let url = "formtest"
 
 function makePostRequest(urlPath, jsonDataString, destination) {
     fetch(urlPath, {
         method: "POST",
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
         body: jsonDataString
     }).then(res => {
         console.log(res)
-        if(res.status==200) {
+        if (res.status == 200) {
             window.location.replace(destination);
-            // window.location.replace("/success_page");
         }
     });
 }
@@ -18,8 +17,8 @@ async function makeAthleteRegistration(e, form) {
     e.preventDefault();
 
     const btnSubmit = document.getElementById('submit_athlete_registration');
-    btnSubmit.disabled= true;
-    setTimeout(()=> btnSubmit.disabled = false, 2000);
+    btnSubmit.disabled = true;
+    setTimeout(() => btnSubmit.disabled = false, 2000);
 
     // json from form
     const jsonData = {};
@@ -27,14 +26,14 @@ async function makeAthleteRegistration(e, form) {
         jsonData[pair[0]] = pair[1];
     }
     console.log(jsonData);
-    makePostRequest('register', JSON.stringify(jsonData),"/success_page");
+    makePostRequest('register', JSON.stringify(jsonData), "/success_page");
 }
 
 //athlete
 
 const athleteRegistration = document.querySelector("#athleteRegistration");
 if (athleteRegistration) {
-    athleteRegistration.addEventListener("submit", function(e){
+    athleteRegistration.addEventListener("submit", function (e) {
         makeAthleteRegistration(e, this);
     });
 }
@@ -44,8 +43,8 @@ async function makeAthleteLogin(e, form) {
     e.preventDefault();
 
     const btnSubmit = document.getElementById('submit_athlete_login');
-    btnSubmit.disabled= true;
-    setTimeout(()=> btnSubmit.disabled = false, 2000);
+    btnSubmit.disabled = true;
+    setTimeout(() => btnSubmit.disabled = false, 2000);
 
     // json from form
     const jsonData = {};
@@ -53,13 +52,13 @@ async function makeAthleteLogin(e, form) {
         jsonData[pair[0]] = pair[1];
     }
     console.log(JSON.stringify(jsonData));
-    makePostRequest('login', JSON.stringify(jsonData),"/availability_page");
+    makePostRequest('login', JSON.stringify(jsonData), "/availability_page");
 }
 
 
 const athleteLogin = document.querySelector("#athleteLogin");
 if (athleteLogin) {
-    athleteLogin.addEventListener("submit", function(e){
+    athleteLogin.addEventListener("submit", function (e) {
         makeAthleteLogin(e, this);
     });
 }
@@ -71,8 +70,8 @@ async function makeAdoRegistration(e, form) {
     e.preventDefault();
 
     const btnSubmit = document.getElementById('submit_ado_registration');
-    btnSubmit.disabled= true;
-    setTimeout(()=> btnSubmit.disabled = false, 2000);
+    btnSubmit.disabled = true;
+    setTimeout(() => btnSubmit.disabled = false, 2000);
 
     // json from form
     const jsonData = {};
@@ -80,13 +79,13 @@ async function makeAdoRegistration(e, form) {
         jsonData[pair[0]] = pair[1];
     }
     console.log(JSON.stringify(jsonData));
-    makePostRequest('register_ado', JSON.stringify(jsonData),"/success_page");
+    makePostRequest('register_ado', JSON.stringify(jsonData), "/success_page");
 }
 
 
 const adoRegistration = document.querySelector("#adoRegistration");
 if (adoRegistration) {
-    adoRegistration.addEventListener("submit", function(e){
+    adoRegistration.addEventListener("submit", function (e) {
         makeAdoRegistration(e, this);
     });
 }
@@ -96,8 +95,8 @@ async function makeAdoLogin(e, form) {
     e.preventDefault();
 
     const btnSubmit = document.getElementById('submit_ado_login');
-    btnSubmit.disabled= true;
-    setTimeout(()=> btnSubmit.disabled = false, 2000);
+    btnSubmit.disabled = true;
+    setTimeout(() => btnSubmit.disabled = false, 2000);
 
     // json from form
     const jsonData = {};
@@ -105,13 +104,13 @@ async function makeAdoLogin(e, form) {
         jsonData[pair[0]] = pair[1];
     }
     console.log(JSON.stringify(jsonData));
-    makePostRequest('login_ado', JSON.stringify(jsonData),"/query_page");
+    makePostRequest('login_ado', JSON.stringify(jsonData), "/query_page");
 }
 
 
 const adoLogin = document.querySelector("#adoLogin");
 if (adoLogin) {
-    adoLogin.addEventListener("submit", function(e){
+    adoLogin.addEventListener("submit", function (e) {
         makeAdoLogin(e, this);
     });
 }
@@ -124,30 +123,33 @@ async function makeAvailability(e, form) {
     e.preventDefault();
 
     const btnSubmit = document.getElementById('submit_availability');
-    btnSubmit.disabled= true;
-    setTimeout(()=> btnSubmit.disabled = false, 2000);
+    btnSubmit.disabled = true;
+    setTimeout(() => btnSubmit.disabled = false, 2000);
 
-    // json from form
     const jsonData = {
-        availability:[]
+        availability: []
     };
 
-    jsonData.availability.push({});
-    for (const pair of new FormData(form)) {
-       jsonData.availability[0][pair[0]] = pair[1];
+    const startDate = $('#startDate').val();
+    const endDate = $('#endDate').val();
+    const location = $('#location').val();
+
+    for (let i = startDate; i <= endDate; i++) {
+        jsonData.availability.push({
+            Location: location,
+            Date: String(i)
+        });
     }
 
-
-    console.log(JSON.stringify(jsonData));
-    makePostRequest('availability', JSON.stringify(jsonData),"/end_page");
+    makePostRequest('availability', JSON.stringify(jsonData), "/end_page");
 }
 
 
-const availability= document.querySelector("#availability");
+const availability = document.querySelector("#availability");
 if (availability) {
-    availability.addEventListener("submit", function(e){
+    availability.addEventListener("submit", function (e) {
         makeAvailability(e, this);
     });
 }
 
-
+// ado query

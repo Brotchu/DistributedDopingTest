@@ -15,11 +15,11 @@ def ado_login():
     ado_email = reqBody['email']
     ado_password = reqBody['password']
     #check if already present in session
-    if session.get('email') == ado_email:
+    if session.get('ado_email') == ado_email:
         return make_response(json.dumps({'Success': True, 'status': 'logged in already'}), 200, {'ContentType': 'application/json'})
     ado = ADO.objects(email= ado_email)[0]
     if check_password_hash(ado.password, ado_password):
-        session['email'] =  ado_email
+        session['ado_email'] =  ado_email
         # session['name'] = "name"
         # print(session_id)
         return json.dumps({'Success': True}), 200, {'ContentType': 'application/json'}

@@ -1,51 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
- <title>Login</title>
+    <meta charset="UTF-8">
+    <title>Login</title>
     <link rel="stylesheet" href="{{url_for('static', filename='css/layui.css') }}" media="all">
 </head>
 
 <body>
+    <h1 align="center">ATHLETE</h1>
 
-<h1 align="center">ATHLETE</h1>
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+        <legend>Login</legend>
+    </fieldset>
 
-
-<fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
-  <legend>Login</legend>
-</fieldset>
-
-<form action="" id="athleteLogin" class="layui-form">
-
-    <div class="layui-form-item">
-    <label class="layui-form-label">Email</label>
-    <div class="layui-input-block">
-         <input type="text" name="email" lay-verify="email" lay-reqtext="Required Item!" placeholder="Input" autocomplete="off" class="layui-input">
-    </div>
-
-        <br>
-
-     <div class="layui-form-item">
-    <label class="layui-form-label">Password</label>
-    <div class="layui-input-block">
-        <input type="password" name="password" lay-verify="required" lay-reqtext="Required Item!" placeholder="******" autocomplete="off" class="layui-input">
-    </div>
-
-        <br>
-
+    <form action="" id="athleteLogin" class="layui-form">
         <div class="layui-form-item">
-        <button type="submit" class="layui-btn layui-btn-primary layui-border" id="submit_athlete_login">Submit</button>
-    </div>
+            <label class="layui-form-label">Email</label>
+            <div class="layui-input-block">
+                <input type="text" name="email" lay-verify="email" lay-reqtext="Required Item!" placeholder="Input"
+                    autocomplete="off" class="layui-input">
+            </div>
 
-</form>
+            <br>
 
+            <div class="layui-form-item">
+                <label class="layui-form-label">Password</label>
+                <div class="layui-input-block">
+                    <input type="password" name="password" lay-verify="required" lay-reqtext="Required Item!"
+                        placeholder="******" autocomplete="off" class="layui-input">
+                </div>
 
-<script src="{{url_for('static', filename='scripts/postRequest.js') }}"></script>
-<!-- <script src="js/layui.js" charset="utf-8"></script> -->
+                <br>
+
+                <div class="layui-form-item">
+                    <button type="submit" class="layui-btn layui-btn-primary layui-border"
+                        id="submit_athlete_login">Submit</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script src="{{url_for('static', filename='scripts/postRequest.js') }}"></script>
 
 </body>
+
 </html>
-
-
-
-
