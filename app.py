@@ -5,7 +5,6 @@ from functools import wraps
 from flask import (Blueprint, Flask, jsonify, make_response, redirect,
                    render_template, request, session)
 from flask_mongoengine import MongoEngine, MongoEngineSessionInterface
-from sklearn.datasets import make_regression
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from ado_login_logout import app_loginADO, app_logoutADO

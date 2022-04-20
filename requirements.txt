@@ -1,6 +1,5 @@
-mongoengine
+bson
 flask
-Werkzeug
 flask_mongoengine
-sklearn
-pymysql
+mongoengine
+Werkzeug
