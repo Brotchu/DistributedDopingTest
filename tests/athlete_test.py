@@ -1,4 +1,6 @@
 # from flask import Flask
+
+import json
 from flask_mongoengine import MongoEngine, MongoEngineSessionInterface
 from schema import Athlete, Emails
 from app import app, db
@@ -8,8 +10,7 @@ app.config['MONGODB_SETTINGS'] =  {
     'host': '127.0.0.1',
     'port': 27017
 }
-
-db.init_app(app)
+#db.init_app(app)
 
 with app.app_context():
     Athlete().drop_collection()
@@ -26,9 +27,12 @@ class TestAthleteRegistration:
         'location' : 'Dublin'
     }
 
+    
+
     def test_athlete_registration(self):
         tester = app.test_client(self)
-        response = tester.post('/register', content_type='multipart/form-data', data=self.athlete)
+        data=json.dumps(self.athlete)
+        response = tester.post('/register', content_type='application/json', data=json.dumps(self.athlete))
 
         print(response)
         
